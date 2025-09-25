@@ -1,0 +1,51 @@
+# =============== Rider ===============
+.idea/
+riderModule.iml
+/_ReSharper.Caches/
+
+# =============== Visual Studio / VS Code ===============
+.vs/
+.vscode/
+
+# =============== Build results ===============
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Tt]emp/
+[Dd]ebug*/
+[Rr]elease*/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# =============== NuGet ===============
+/packages/
+*.nupkg
+*.snupkg
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+
+# =============== Compiled binaries ===============
+*.dll
+*.exe
+*.app
+*.so
+*.dylib
+*.pdb
+
+# =============== Others ===============
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+*.log
+*.dbmdl
+*.bak
+*.mdf
+*.ldf
+*.swp
+*.tmp
