@@ -1,3 +1,8 @@
+using Company.G05.BLL.Interfaces;
+using Company.G05.BLL.Repositories;
+using Company.G05.DAL.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace Company.G05.PL;
 
 public class Program
@@ -8,6 +13,12 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        builder.Services.AddScoped<DepartmentRepository>();
+        builder.Services.AddDbContext<CompanyDbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
 
         var app = builder.Build();
 
@@ -23,7 +34,7 @@ public class Program
         // app.UseAuthorization();
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Department}/{action=Index}/{id?}");
 
         app.Run();
     }

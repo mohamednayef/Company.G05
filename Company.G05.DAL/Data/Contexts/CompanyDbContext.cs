@@ -6,7 +6,7 @@ namespace Company.G05.DAL.Data.Contexts;
 
 public class CompanyDbContext : DbContext
 {
-    public CompanyDbContext() : base()
+    public CompanyDbContext(DbContextOptions<CompanyDbContext> options) : base(options)
     {
         
     }
@@ -16,11 +16,11 @@ public class CompanyDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // base.OnConfiguring(optionsBuilder);
-        string connectionString = "Server=localhost,1433;Database=CompanyG05;User Id=sa;Password=StrongP@ssw0rd;Encrypt=False;TrustServerCertificate=True;";
-        optionsBuilder.UseSqlServer(connectionString);
-    }
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     // base.OnConfiguring(optionsBuilder);
+    //     string connectionString = "Server=localhost,1433;Database=CompanyG05;User Id=sa;Password=StrongP@ssw0rd;Encrypt=False;TrustServerCertificate=True;";
+    //     optionsBuilder.UseSqlServer(connectionString);
+    // }
     public DbSet<Department> Departments { get; set; }
 }
