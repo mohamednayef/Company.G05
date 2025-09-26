@@ -9,9 +9,9 @@ public class DepartmentRepository : IDepartmentRepository
 {
     private readonly CompanyDbContext _context;
 
-    public DepartmentRepository()
+    public DepartmentRepository(CompanyDbContext context)
     {
-        _context = new CompanyDbContext();
+        _context = context;
     }
     
     public IEnumerable<Department> GetAll()
