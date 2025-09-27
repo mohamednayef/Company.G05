@@ -2,13 +2,13 @@
 @model Department
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Delete";
 }
 
-<h1>Details Department Page</h1>
+<h1>Delete Department Page</h1>
 <br>
 <br>
-<div>
+<form asp-action="Delete" method="post">
     <div class="my-3">
         <label asp-for="Code" class="col-form-label"></label>
         <input asp-for="Code" class="form-control" value="@Model.Code" readonly="readonly">
@@ -22,8 +22,9 @@
         <input type="datetime-local" asp-for="CreatedAt" class="form-control" value="@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")" readonly="readonly">
     </div>
     <div class="my-3">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <input type="submit" value="Delete" class="btn btn-danger">
+        @* <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a> *@
         <a asp-action="Index" class="btn btn-light">Back To List</a>
     </div>
     
-</div>
+</form>
