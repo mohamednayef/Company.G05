@@ -1,0 +1,14 @@
+@model Department
+
+<div class="my-3">
+    <label asp-for="Code" class="col-form-label"></label>
+    <input asp-for="Code" class="form-control" value="@Model.Code" readonly="readonly">
+</div>
+<div class="my-3">
+    <label asp-for="Name" class="col-form-label"></label>
+    <input asp-for="Name" class="form-control" value="@Model.Name" readonly="readonly">
+</div>
+<div class="my-3">
+    <label asp-for="CreatedAt" class="col-form-label"></label>
+    <input type="datetime-local" asp-for="CreatedAt" class="form-control" value="@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")" readonly="readonly">
+</div>

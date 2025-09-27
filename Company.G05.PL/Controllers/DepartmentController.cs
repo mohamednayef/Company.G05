@@ -57,14 +57,19 @@ public class DepartmentController : Controller
 
     public IActionResult Edit(int? id)
     {
-        // if (id is null) return BadRequest();
-        //
-        // var department = _departmentRepository.Get(id.Value);
-        // if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
+        if (id is null) return BadRequest();
         
-        // return View(department);
+        var department = _departmentRepository.Get(id.Value);
+        if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
+        var departmentDto = new CreateDepartmentDto()
+        {
+            Code = department.Code,
+            Name = department.Name,
+            CreatedAt = department.CreatedAt
+        };
+        return View(departmentDto);
         
-        return Details(id, viewName: "Edit");
+        // return Details(id, viewName: "Edit");
     }
 
     [HttpPost]

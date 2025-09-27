@@ -67,15 +67,47 @@ public class EmployeeController : Controller
 
     public IActionResult Edit(int? id)
     {
-        return Details(id, "Edit");
+        if (id is null) return BadRequest();
+        var employee = _employeeRepository.Get(id.Value);
+        if (employee is null) return NotFound();
+        var createEmployeeDto = new CreateEmployeeDto()
+        {
+            Name = employee.Name,
+            Age = employee.Age,
+            Email = employee.Email,
+            Address = employee.Address,
+            Phone = employee.Phone,
+            Salary = employee.Salary,
+            IsActive = employee.IsActive,
+            IsDeleted = employee.IsDeleted,
+            HirignDate = employee.HirignDate,
+            CreatedAt = employee.CreatedAt
+        };
+        return View(createEmployeeDto);
+        
+        // return Details(id, "Edit");
     }
 
     [HttpPost]
-    public IActionResult Edit(Employee model)
+    public IActionResult Edit([FromRoute]int? id, CreateEmployeeDto model)
     {
         if (ModelState.IsValid)
         {
-            int count = _employeeRepository.Update(model);
+            var employee = new Employee()
+            {
+                Id = id.Value,
+                Name = model.Name,
+                Age = model.Age,
+                Email = model.Email,
+                Address = model.Address,
+                Phone = model.Phone,
+                Salary = model.Salary,
+                IsActive = model.IsActive,
+                IsDeleted = model.IsDeleted,
+                HirignDate = model.HirignDate,
+                CreatedAt = model.CreatedAt
+            };
+            int count = _employeeRepository.Update(employee);
             if (count > 0)
             {
                 return RedirectToAction(nameof(Index));
