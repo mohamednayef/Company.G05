@@ -15,6 +15,8 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         builder.Services.AddScoped<DepartmentRepository>();
+        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        builder.Services.AddScoped<EmployeeRepository>();
         builder.Services.AddDbContext<CompanyDbContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -34,7 +36,7 @@ public class Program
         // app.UseAuthorization();
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Department}/{action=Index}/{id?}");
+            pattern: "{controller=Employee}/{action=Index}/{id?}");
 
         app.Run();
     }
