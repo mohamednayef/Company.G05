@@ -44,4 +44,36 @@ public class DepartmentController : Controller
         }
         return View(model);
     }
+
+    public IActionResult Details(int id)
+    {
+        var department = _departmentRepository.Get(id);
+        return View(department);
+    }
+
+    public IActionResult Edit(int id)
+    {
+        var department = _departmentRepository.Get(id);
+        return View(department);
+    }
+
+    [HttpPost]
+    public IActionResult Update(Department model)
+    {
+        if (ModelState.IsValid)
+        {
+            _departmentRepository.Update(model);
+            return RedirectToAction("Index");
+        }
+        return View(model);
+        // _departmentRepository.Departments.update(model);
+        // return RedirectToAction("Index");
+    }
+
+    public IActionResult Delete(int id)
+    {
+        var department = _departmentRepository.Get(id);
+        _departmentRepository.Delete(department);
+        return RedirectToAction("Index");
+    }
 }
