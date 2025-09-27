@@ -23,4 +23,5 @@ public class CompanyDbContext : DbContext
     //     optionsBuilder.UseSqlServer(connectionString);
     // }
     public DbSet<Department> Departments { get; set; }
+    public DbSet<Employee> Employees { get; set; }
 }
