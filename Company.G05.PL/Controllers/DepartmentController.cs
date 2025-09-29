@@ -39,6 +39,7 @@ public class DepartmentController : Controller
             });
             if (count > 0)
             {
+                TempData["Message"] = "Department created successfully";
                 return RedirectToAction("Index");
             }
         }
@@ -74,18 +75,33 @@ public class DepartmentController : Controller
 
     [HttpPost]
     // [ValidateAntiForgeryToken]
-    public IActionResult Edit([FromRoute]int id, Department model)
+    public IActionResult Edit([FromRoute]int id, CreateDepartmentDto model)
     {
+        // return Content("df");
         if (ModelState.IsValid)
         {
-            if (id != model.Id) return BadRequest();
-            int count = _departmentRepository.Update(model);
+            // if (id != model.Id) return BadRequest();
+            int count = _departmentRepository.Update(new Department()
+            {
+                Id = id,
+                Code = model.Code,
+                Name = model.Name,
+                CreatedAt = model.CreatedAt
+            });
             if (count > 0)
             {
+                TempData["Message"] = "Department updated successfully";
                 return RedirectToAction("Index");
             }
         }
-        return View(model);
+
+        CreateDepartmentDto departmentDto = new CreateDepartmentDto()
+        {
+            Code = model.Code,
+            Name = model.Name,
+            CreatedAt = model.CreatedAt
+        };
+        return View(departmentDto);
     }
     
     public IActionResult Delete(int? id)
@@ -105,6 +121,7 @@ public class DepartmentController : Controller
     {
         var department = _departmentRepository.Get(id);
         _departmentRepository.Delete(department);
+        TempData["Message"] = "Department deleted successfully";
         return RedirectToAction("Index");
     }
 }

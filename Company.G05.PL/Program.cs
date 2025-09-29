@@ -1,6 +1,8 @@
 using Company.G05.BLL.Interfaces;
 using Company.G05.BLL.Repositories;
 using Company.G05.DAL.Data.Contexts;
+using Company.G05.PL.Mapping;
+using Company.G05.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.G05.PL;
@@ -21,6 +23,17 @@ public class Program
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
+        
+        // DI types & life time
+        // builder.Services.AddScobed();     // create object life time per request
+        // builder.Services.AddTransient();     // create object life time per operation
+        // builder.Services.AddSingleton();     // create object life time per application
+        
+        builder.Services.AddScoped<IScopedService, ScopedService>();
+        builder.Services.AddTransient<ITransentService, TransentService>();
+        builder.Services.AddSingleton<ISingletonService, SingletonService>();
+
+        builder.Services.AddAutoMapper(M => M.AddProfile( new EmployeeProfile()));
 
         var app = builder.Build();
 

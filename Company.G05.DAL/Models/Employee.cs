@@ -30,4 +30,7 @@ public class Employee : BaseEntity
     
     [DisplayName("Date Of Creation")]
     public DateTime CreatedAt { get; set; }
+    
+    public int? DepartmentId { get; set; }
+    public Department Department { get; set; }
 }

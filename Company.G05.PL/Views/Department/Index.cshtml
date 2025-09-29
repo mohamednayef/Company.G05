@@ -6,6 +6,14 @@
 <h1>All Departments</h1>
 <br>
 <br>
+
+@if (@TempData["Message"] is not null)
+{
+    <div class="m-3 alert alert-success">
+        <p>@TempData["Message"]</p>
+    </div>
+}
+
 <a asp-action="Create" asp-controller="Department" class="btn btn-primary">Create Department</a>
 <br>
 <br>

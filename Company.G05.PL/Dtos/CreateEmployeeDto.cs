@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace Company.G05.PL.Models;
 
 public class CreateEmployeeDto
@@ -12,4 +14,7 @@ public class CreateEmployeeDto
     public bool IsDeleted { get; set; }
     public DateTime HirignDate { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    [DisplayName("Department")]
+    public int? DepartmentId { get; set; }
 }
