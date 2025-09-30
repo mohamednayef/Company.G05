@@ -122,21 +122,22 @@ public class EmployeeController : Controller
     {
         if (ModelState.IsValid)
         {
-            var employee = new Employee()
-            {
-                Id = id.Value,
-                Name = model.Name,
-                Age = model.Age,
-                Email = model.Email,
-                Address = model.Address,
-                Phone = model.Phone,
-                Salary = model.Salary,
-                IsActive = model.IsActive,
-                IsDeleted = model.IsDeleted,
-                HirignDate = model.HirignDate,
-                CreatedAt = model.CreatedAt,
-                DepartmentId = model.DepartmentId,
-            };
+            var employee = _mapper.Map<Employee>(model);
+            // var employee = new Employee()
+            // {
+            //     Id = id.Value,
+            //     Name = model.Name,
+            //     Age = model.Age,
+            //     Email = model.Email,
+            //     Address = model.Address,
+            //     Phone = model.Phone,
+            //     Salary = model.Salary,
+            //     IsActive = model.IsActive,
+            //     IsDeleted = model.IsDeleted,
+            //     HirignDate = model.HirignDate,
+            //     CreatedAt = model.CreatedAt,
+            //     DepartmentId = model.DepartmentId,
+            // };
             int count = _employeeRepository.Update(employee);
             if (count > 0)
             {

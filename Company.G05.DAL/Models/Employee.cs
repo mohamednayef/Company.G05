@@ -32,5 +32,5 @@ public class Employee : BaseEntity
     public DateTime CreatedAt { get; set; }
     
     public int? DepartmentId { get; set; }
-    public Department Department { get; set; }
+    public Department? Department { get; set; }
 }

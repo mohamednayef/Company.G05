@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Company.G05.DAL.Models;
 
 namespace Company.G05.PL.Models;
 
@@ -17,4 +18,6 @@ public class CreateEmployeeDto
     
     [DisplayName("Department")]
     public int? DepartmentId { get; set; }
+    public Department? Department { get; set; }
+    // public string DepartmentName { get; set; }
 }
