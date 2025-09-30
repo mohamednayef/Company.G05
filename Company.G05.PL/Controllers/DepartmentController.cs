@@ -1,3 +1,4 @@
+using AutoMapper;
 using Company.G05.BLL.Interfaces;
 using Company.G05.BLL.Repositories;
 using Company.G05.DAL.Models;
@@ -8,16 +9,25 @@ namespace Company.G05.PL.Controllers;
 
 public class DepartmentController : Controller
 {
-    private readonly IDepartmentRepository _departmentRepository;
+    private readonly IMapper _mapper;
+
+    private readonly IUnitOfWork _unitOfWork;
+    // private readonly IDepartmentRepository _departmentRepository;
     
-    public DepartmentController(IDepartmentRepository departmentRepository)
+    public DepartmentController(
+        // IDepartmentRepository departmentRepository
+        IMapper mapper,
+        IUnitOfWork unitOfWork
+        )
     {
-        _departmentRepository = departmentRepository;
+        _mapper = mapper;
+        _unitOfWork = unitOfWork;
+        // _departmentRepository = departmentRepository;
     }
     
     public IActionResult Index()
     {
-        var departments = _departmentRepository.GetAll();
+        var departments = _unitOfWork.DepartmentRepository.GetAll();
         return View(departments);
     }
     
@@ -31,18 +41,16 @@ public class DepartmentController : Controller
     {
         if (ModelState.IsValid)
         {
-            var count = _departmentRepository.Add(new Department()
-            {
-                Code = model.Code,
-                Name = model.Name,
-                CreatedAt = model.CreatedAt
-            });
+            var department = _mapper.Map<Department>(model);
+             _unitOfWork.DepartmentRepository.Add(department);
+            int count = _unitOfWork.SaveChanges();
             if (count > 0)
             {
                 TempData["Message"] = "Department created successfully";
                 return RedirectToAction("Index");
             }
         }
+        _unitOfWork.SaveChanges();
         return View(model);
     }
 
@@ -50,7 +58,7 @@ public class DepartmentController : Controller
     {
         if (id is null) return BadRequest();
         
-        var department = _departmentRepository.Get(id.Value);
+        var department = _unitOfWork.DepartmentRepository.Get(id.Value);
         if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
         
         return View(viewName, department);
@@ -60,14 +68,9 @@ public class DepartmentController : Controller
     {
         if (id is null) return BadRequest();
         
-        var department = _departmentRepository.Get(id.Value);
+        var department = _unitOfWork.DepartmentRepository.Get(id.Value);
         if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
-        var departmentDto = new CreateDepartmentDto()
-        {
-            Code = department.Code,
-            Name = department.Name,
-            CreatedAt = department.CreatedAt
-        };
+        var departmentDto = _mapper.Map<CreateDepartmentDto>(department);
         return View(departmentDto);
         
         // return Details(id, viewName: "Edit");
@@ -81,26 +84,18 @@ public class DepartmentController : Controller
         if (ModelState.IsValid)
         {
             // if (id != model.Id) return BadRequest();
-            int count = _departmentRepository.Update(new Department()
-            {
-                Id = id,
-                Code = model.Code,
-                Name = model.Name,
-                CreatedAt = model.CreatedAt
-            });
+            var department = _mapper.Map<Department>(model);
+            _unitOfWork.DepartmentRepository.Update(department);
+            int count = _unitOfWork.SaveChanges();
             if (count > 0)
             {
                 TempData["Message"] = "Department updated successfully";
                 return RedirectToAction("Index");
             }
         }
-
-        CreateDepartmentDto departmentDto = new CreateDepartmentDto()
-        {
-            Code = model.Code,
-            Name = model.Name,
-            CreatedAt = model.CreatedAt
-        };
+        
+        var departmentDto = _mapper.Map<CreateDepartmentDto>(model);
+        _unitOfWork.SaveChanges();
         return View(departmentDto);
     }
     
@@ -108,7 +103,7 @@ public class DepartmentController : Controller
     {
         // if (id is null) return BadRequest();
         //
-        // var department = _departmentRepository.Get(id.Value);
+        // var department = UnitOfWork.DepartmentRepository.Get(id.Value);
         // if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
         //
         // return View(department);
@@ -119,9 +114,10 @@ public class DepartmentController : Controller
     [HttpPost]
     public IActionResult Delete(int id)
     {
-        var department = _departmentRepository.Get(id);
-        _departmentRepository.Delete(department);
+        var department = _unitOfWork.DepartmentRepository.Get(id);
+        _unitOfWork.DepartmentRepository.Delete(department);
         TempData["Message"] = "Department deleted successfully";
+        _unitOfWork.SaveChanges();
         return RedirectToAction("Index");
     }
 }

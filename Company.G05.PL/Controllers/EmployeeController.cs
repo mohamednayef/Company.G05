@@ -9,19 +9,22 @@ namespace Company.G05.PL.Controllers;
 
 public class EmployeeController : Controller
 {
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IDepartmentRepository _departmentRepository;
+    // private readonly IEmployeeRepository _employeeRepository;
+    // private readonly IDepartmentRepository _departmentRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     
     // ask CLR create object from EmployeeRepository
     public EmployeeController(
-        IEmployeeRepository employeeRepository, 
-        IDepartmentRepository departmentRepository,
+        // IEmployeeRepository employeeRepository, 
+        // IDepartmentRepository departmentRepository,
+        IUnitOfWork unitOfWork,
         IMapper mapper
         )
     {
-        _employeeRepository = employeeRepository;
-        _departmentRepository = departmentRepository;
+        // _employeeRepository = employeeRepository;
+        // _departmentRepository = departmentRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
     
@@ -30,11 +33,11 @@ public class EmployeeController : Controller
         IEnumerable<Employee> employees;
         if (SearchInput == null || SearchInput.Length == 0)
         {
-            employees = _employeeRepository.GetAll();
+            employees = _unitOfWork.EmployeeRepository.GetAll();
         }
         else
         {
-            employees = _employeeRepository.GetByName(SearchInput);
+            employees = _unitOfWork.EmployeeRepository.GetByName(SearchInput);
         }
         ViewData["Message"] = "Message From ViewData";
         ViewBag.Msg = "Message From ViewBag";
@@ -46,7 +49,7 @@ public class EmployeeController : Controller
     {
         if(id is null) return BadRequest($"id should not be null");
         
-        var employee = _employeeRepository.Get(id ?? 0);
+        var employee = _unitOfWork.EmployeeRepository.Get(id ?? 0);
         
         if(employee is null) return NotFound(new { StatusCode = "404", Message = $"Employee with id {id} not found" });
         
@@ -55,7 +58,7 @@ public class EmployeeController : Controller
 
     public IActionResult Create()
     {
-        ViewData["departments"] = _departmentRepository.GetAll();
+        ViewData["departments"] = _unitOfWork.DepartmentRepository.GetAll();
         return View();
     }
 
@@ -80,7 +83,8 @@ public class EmployeeController : Controller
             //     DepartmentId = model.DepartmentId,
             // });
             var employee = _mapper.Map<Employee>(model);
-            int count = _employeeRepository.Add(employee);
+            _unitOfWork.EmployeeRepository.Add(employee);
+            int count = _unitOfWork.SaveChanges();
             if (count > 0)
             {
                 TempData["Message"] = $"Employee {model.Name} created successfully";
@@ -94,7 +98,7 @@ public class EmployeeController : Controller
     public IActionResult Edit(int? id)
     {
         if (id is null) return BadRequest();
-        var employee = _employeeRepository.Get(id.Value);
+        var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
         if (employee is null) return NotFound();
         // var createEmployeeDto = new CreateEmployeeDto()
         // {
@@ -111,7 +115,7 @@ public class EmployeeController : Controller
         //     DepartmentId = employee.DepartmentId,
         // };
         var createEmployeeDto = _mapper.Map<CreateEmployeeDto>(employee);
-        ViewData["departments"] = _departmentRepository.GetAll();
+        ViewData["departments"] = _unitOfWork.DepartmentRepository.GetAll();
         return View(createEmployeeDto);
         
         // return Details(id, "Edit");
@@ -123,6 +127,7 @@ public class EmployeeController : Controller
         if (ModelState.IsValid)
         {
             var employee = _mapper.Map<Employee>(model);
+            employee.Id = id.Value;
             // var employee = new Employee()
             // {
             //     Id = id.Value,
@@ -138,7 +143,8 @@ public class EmployeeController : Controller
             //     CreatedAt = model.CreatedAt,
             //     DepartmentId = model.DepartmentId,
             // };
-            int count = _employeeRepository.Update(employee);
+            _unitOfWork.EmployeeRepository.Update(employee);
+            int count = _unitOfWork.SaveChanges();
             if (count > 0)
             {
                 TempData["Message"] = $"Employee with id {id} updated successfully";
@@ -156,13 +162,14 @@ public class EmployeeController : Controller
     [HttpPost]
     public IActionResult Delete([FromRoute]int id, Employee model)
     {
-        int count = _employeeRepository.Delete(model);
+        _unitOfWork.EmployeeRepository.Delete(model);
+        int count = _unitOfWork.SaveChanges();
         if (count > 0)
         {
             TempData["Message"] = $"Employee with id {id} deleted successfully";
             return RedirectToAction(nameof(Index));
         }
-        
+        _unitOfWork.SaveChanges();
         return View(model);
     }
 }

@@ -15,10 +15,11 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-        builder.Services.AddScoped<DepartmentRepository>();
-        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        builder.Services.AddScoped<EmployeeRepository>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        // builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        // builder.Services.AddScoped<DepartmentRepository>();
+        // builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        // builder.Services.AddScoped<EmployeeRepository>();
         builder.Services.AddDbContext<CompanyDbContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
