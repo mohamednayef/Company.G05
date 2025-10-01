@@ -1,6 +1,8 @@
+using System.Reflection.Metadata;
 using AutoMapper;
 using Company.G05.BLL.Interfaces;
 using Company.G05.DAL.Models;
+using Company.G05.PL.Helpers;
 using Company.G05.PL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -68,25 +70,16 @@ public class EmployeeController : Controller
     {
         if (ModelState.IsValid)
         {
-            // int count = _employeeRepository.Add(new Employee()
-            // {
-            //     Name = model.Name,
-            //     Age = model.Age,
-            //     Email = model.Email,
-            //     Address = model.Address,
-            //     Phone = model.Phone,
-            //     Salary = model.Salary,
-            //     IsActive = model.IsActive,
-            //     IsDeleted = model.IsDeleted,
-            //     HirignDate = model.HirignDate,
-            //     CreatedAt = model.CreatedAt,
-            //     DepartmentId = model.DepartmentId,
-            // });
+            if (model.Image is not null)
+            {
+                model.Name = DocumentSettings.UploadFile(model.Image, "Images");
+            }
             var employee = _mapper.Map<Employee>(model);
             _unitOfWork.EmployeeRepository.Add(employee);
             int count = _unitOfWork.SaveChanges();
             if (count > 0)
             {
+                
                 TempData["Message"] = $"Employee {model.Name} created successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -126,23 +119,18 @@ public class EmployeeController : Controller
     {
         if (ModelState.IsValid)
         {
+            if (model.ImageName is not null)
+            {
+                DocumentSettings.DeleteFile(model.ImageName, "Images");
+            }
+            
+            if (model.Image is not null)
+            {
+                model.ImageName = DocumentSettings.UploadFile(model.Image, "Images");
+            }
             var employee = _mapper.Map<Employee>(model);
             employee.Id = id.Value;
-            // var employee = new Employee()
-            // {
-            //     Id = id.Value,
-            //     Name = model.Name,
-            //     Age = model.Age,
-            //     Email = model.Email,
-            //     Address = model.Address,
-            //     Phone = model.Phone,
-            //     Salary = model.Salary,
-            //     IsActive = model.IsActive,
-            //     IsDeleted = model.IsDeleted,
-            //     HirignDate = model.HirignDate,
-            //     CreatedAt = model.CreatedAt,
-            //     DepartmentId = model.DepartmentId,
-            // };
+            
             _unitOfWork.EmployeeRepository.Update(employee);
             int count = _unitOfWork.SaveChanges();
             if (count > 0)
@@ -166,6 +154,10 @@ public class EmployeeController : Controller
         int count = _unitOfWork.SaveChanges();
         if (count > 0)
         {
+            if (model.ImageName is not null)
+            {
+                DocumentSettings.DeleteFile(model.ImageName, "Images");
+            }
             TempData["Message"] = $"Employee with id {id} deleted successfully";
             return RedirectToAction(nameof(Index));
         }
