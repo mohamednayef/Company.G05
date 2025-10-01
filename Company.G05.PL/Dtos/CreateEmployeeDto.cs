@@ -20,4 +20,6 @@ public class CreateEmployeeDto
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }
     // public string DepartmentName { get; set; }
+    public string? ImageName { get; set; }
+    public IFormFile? Image { get; set; }
 }

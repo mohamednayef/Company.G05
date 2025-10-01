@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Company.G05.DAL.Models;
 
@@ -33,4 +34,6 @@ public class Employee : BaseEntity
     
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }
+    
+    public string? ImageName { get; set; }
 }
