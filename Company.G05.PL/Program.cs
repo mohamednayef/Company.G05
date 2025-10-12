@@ -35,6 +35,7 @@ public class Program
         builder.Services.AddSingleton<ISingletonService, SingletonService>();
 
         builder.Services.AddAutoMapper(M => M.AddProfile( new EmployeeProfile()));
+        builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProflie()));
 
         var app = builder.Build();
 

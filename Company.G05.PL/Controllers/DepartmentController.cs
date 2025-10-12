@@ -25,9 +25,9 @@ public class DepartmentController : Controller
         // _departmentRepository = departmentRepository;
     }
     
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var departments = _unitOfWork.DepartmentRepository.GetAll();
+        var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
         return View(departments);
     }
     
@@ -37,38 +37,38 @@ public class DepartmentController : Controller
     }
     
     [HttpPost]
-    public IActionResult Create(CreateDepartmentDto model)
+    public async Task<IActionResult> Create(CreateDepartmentDto model)
     {
         if (ModelState.IsValid)
         {
             var department = _mapper.Map<Department>(model);
-             _unitOfWork.DepartmentRepository.Add(department);
-            int count = _unitOfWork.SaveChanges();
+            await _unitOfWork.DepartmentRepository.AddAsync(department);
+            int count = await _unitOfWork.SaveChangesAsync();
             if (count > 0)
             {
                 TempData["Message"] = "Department created successfully";
                 return RedirectToAction("Index");
             }
         }
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.SaveChangesAsync();
         return View(model);
     }
 
-    public IActionResult Details(int? id, string viewName = "Details")
+    public async Task<IActionResult> Details(int? id, string viewName = "Details")
     {
         if (id is null) return BadRequest();
         
-        var department = _unitOfWork.DepartmentRepository.Get(id.Value);
+        var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
         if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
         
         return View(viewName, department);
     }
 
-    public IActionResult Edit(int? id)
+    public async Task<IActionResult> Edit(int? id)
     {
         if (id is null) return BadRequest();
         
-        var department = _unitOfWork.DepartmentRepository.Get(id.Value);
+        var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
         if (department is null) return NotFound( new { StatusCode = "404", Message = $"Department with id: {id.Value} not found" });
         var departmentDto = _mapper.Map<CreateDepartmentDto>(department);
         return View(departmentDto);
@@ -78,15 +78,16 @@ public class DepartmentController : Controller
 
     [HttpPost]
     // [ValidateAntiForgeryToken]
-    public IActionResult Edit([FromRoute]int id, CreateDepartmentDto model)
+    public async Task<IActionResult> Edit([FromRoute]int id, CreateDepartmentDto model)
     {
         // return Content("df");
         if (ModelState.IsValid)
         {
             // if (id != model.Id) return BadRequest();
             var department = _mapper.Map<Department>(model);
+            department.Id = id;
             _unitOfWork.DepartmentRepository.Update(department);
-            int count = _unitOfWork.SaveChanges();
+            int count = await _unitOfWork.SaveChangesAsync();
             if (count > 0)
             {
                 TempData["Message"] = "Department updated successfully";
@@ -95,11 +96,11 @@ public class DepartmentController : Controller
         }
         
         var departmentDto = _mapper.Map<CreateDepartmentDto>(model);
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.SaveChangesAsync();
         return View(departmentDto);
     }
     
-    public IActionResult Delete(int? id)
+    public async Task<IActionResult> Delete(int? id)
     {
         // if (id is null) return BadRequest();
         //
@@ -108,16 +109,16 @@ public class DepartmentController : Controller
         //
         // return View(department);
         
-        return Details(id, viewName: "Delete");
+        return await Details(id, viewName: "Delete");
     }
     
     [HttpPost]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var department = _unitOfWork.DepartmentRepository.Get(id);
+        var department = await _unitOfWork.DepartmentRepository.GetAsync(id);
         _unitOfWork.DepartmentRepository.Delete(department);
         TempData["Message"] = "Department deleted successfully";
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.SaveChangesAsync();
         return RedirectToAction("Index");
     }
 }
