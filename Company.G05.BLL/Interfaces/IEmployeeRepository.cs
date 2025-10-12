@@ -9,5 +9,5 @@ public interface IEmployeeRepository : IGenericRepository<Employee>
     // int Add(Employee model);
     // int Update(Employee model);
     // int Delete(Employee model);
-    List<Employee> GetByName(string name);
+    Task<List<Employee>> GetByNameAsync(string name);
 }

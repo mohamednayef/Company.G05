@@ -1,8 +1,8 @@
 namespace Company.G05.BLL.Interfaces;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork : IAsyncDisposable
 {
     IDepartmentRepository DepartmentRepository { get; }
     IEmployeeRepository EmployeeRepository { get; }
-    int SaveChanges();
+    Task<int> SaveChangesAsync();
 }
