@@ -1,8 +1,10 @@
 using Company.G05.BLL.Interfaces;
 using Company.G05.BLL.Repositories;
 using Company.G05.DAL.Data.Contexts;
+using Company.G05.DAL.Models;
 using Company.G05.PL.Mapping;
 using Company.G05.PL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.G05.PL;
@@ -36,6 +38,9 @@ public class Program
 
         builder.Services.AddAutoMapper(M => M.AddProfile( new EmployeeProfile()));
         builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProflie()));
+
+        builder.Services.AddIdentity<AppUser, IdentityRole>()
+            .AddEntityFrameworkStores<CompanyDbContext>();
 
         var app = builder.Build();
 
