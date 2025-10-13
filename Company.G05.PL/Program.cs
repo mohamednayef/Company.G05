@@ -41,6 +41,10 @@ public class Program
 
         builder.Services.AddIdentity<AppUser, IdentityRole>()
             .AddEntityFrameworkStores<CompanyDbContext>();
+        builder.Services.ConfigureApplicationCookie(config =>
+        {
+            config.LoginPath = "/Account/Login";
+        });
 
         var app = builder.Build();
 
@@ -57,6 +61,9 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Employee}/{action=Index}/{id?}");
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.Run();
     }
